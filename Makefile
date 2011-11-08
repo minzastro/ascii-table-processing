@@ -1,0 +1,19 @@
+F90=gfortran -Jlib -Ilib -L/home/Tux/minz/lib -I/home/Tux/minz/lib  -L.
+gnuout: src/gnuout.F90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/stringUtils.o
+	$(F90) -lgnuplotfortran -lfortranposix -o gnuout src/gnuout.F90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/stringUtils.o
+lib/comline.o: src/comline.f90 lib/logs.o lib/operators.o
+	$(F90) -c -o lib/comline.o src/comline.f90
+lib/array_works.o: src/array_works.f90 lib/logs.o lib/tcGlobals.o lib/file_io.o lib/operators.o lib/stringUtils.o lib/StringArray.o
+	$(F90) -c -o lib/array_works.o src/array_works.f90
+lib/StringArray.o: src/StringArray.f90 lib/logs.o lib/operators.o
+	$(F90) -c -o lib/StringArray.o src/StringArray.f90
+lib/logs.o: src/logs.f90 
+	$(F90) -c -o lib/logs.o src/logs.f90
+lib/stringUtils.o: src/stringUtils.f90 
+	$(F90) -c -o lib/stringUtils.o src/stringUtils.f90
+lib/file_io.o: src/file_io.f90 
+	$(F90) -c -o lib/file_io.o src/file_io.f90
+lib/tcGlobals.o: src/tcGlobals.F90 lib/StringArray.o lib/logs.o lib/operators.o
+	$(F90) -c -o lib/tcGlobals.o src/tcGlobals.F90
+lib/operators.o: src/operators.f90 
+	$(F90) -c -o lib/operators.o src/operators.f90
