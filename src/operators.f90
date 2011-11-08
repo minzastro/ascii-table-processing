@@ -5,6 +5,7 @@ module operators
 !
   implicit none
   
+  real*8, parameter :: REAL_NAN = Z'FFF8000000000000'
   logical, save :: operatorsChecking = .true.
 
 ! Override operators:
@@ -187,6 +188,10 @@ character*(1) sChar
 integer i
 logical l, bWasExp, bWasDot
   l = .true.
+  if (len(trim(sLine)).eq.0) then
+    IsReal = .false.
+    return
+  endif
   bWasExp = .false.
   bWasDot = .false.
   do i = 1, len(trim(sLine))
