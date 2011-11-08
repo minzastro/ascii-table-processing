@@ -3,6 +3,7 @@ use array_works
 use quickSort
 use StringArray
 use operators
+use comline
 
 implicit none
 
@@ -15,9 +16,6 @@ integer iCols1, iCols2, iRows1, iRows2     !data measures
 integer iIndex1(MAX_ROW), iIndex2(MAX_ROW) !indexes for the data
 type (TStringArray) xArray !! For parsing comma-separated arguments
 
-!character*(500) sFormat
-character*(5) sIntFormat
-
 iArgs = iargc()
 
 bIsInteger(:) = .false.
@@ -28,89 +26,75 @@ col2 = 1
 sFile1 = ''
 sFile2 = ''
 
-sIntFormat = 'F6.0'
+sIntegerFormat = 'F6.0'
 sRealFormat = 'E16.5'
 
-do while (i.le.iArgs)
-  call GetArg(i, sKey)
-  call GetArg(i+1, sKeyValue)
-  comm_case:select case (trim(sKey))
-    case('-1')
-      col1 = sKeyValue
-    case('-2')
-      col2 = sKeyValue
-    case('-j')
-      col1 = sKeyValue
-      col2 = sKeyValue
-    case('-i')
-      call Sqeeze(sKeyValue, ' ')
-      call TStringArraySplit(sKeyValue, ',', xArray)
-      do ii = 1, xArray%length
-        jj = trim(xArray%member(ii)%chars)
-        bIsInteger(jj) = .true.
-      enddo
-    case('-int')
-      sIntFormat = trim(sKeyValue)
-    case('-real')
-      sRealFormat = trim(sKeyValue)
-    case('--help')
-      print *, 'Usage: join_num [options] file1 file2'
-      print *, 'For each pair of input lines with identical (in numerical sense) join fields, write a line to'
-      print *, 'standard output.  The default join field is the first, delimited'
-      print *, 'by whitespace.  When FILE1 or FILE2 (not both) is -, read standard input.'
-      print *, '  -i LIST           LIST provides comma-separated list of fields, that are assumed to be integer'
-      print *, '  -int FORMAT       FORMAT sets output format for integer values'
-      print *, '  -real FORMAT      FORMAT sets output format for real values'
-      print *, '  -1 FIELD          join on this FIELD of file 1'
-      print *, '  -2 FIELD          join on this FIELD of file 2'
-      print *, '  -j FIELD          equivalent to `-1 FIELD -2 FIELD'
-      print *, '  --help            display this help and exit'
-      STOP
-    case default
-      if (trim(sFile1).eq.'') then
-        sFile1 = sKey
-      else
-        sFile2 = sKey
-      endif
-      i = i - 1
-  end select comm_case
-  i = i + 2
-enddo !args
+call clReadParams()
+
+if (clCheckParam('-j')) then
+  col1 = clGetParamValue('-j')
+  col2 = col1
+else
+  col1 = clGetParamValue('-1', 1)
+  col2 = clGetParamValue('-2', 1)
+endif
+
+if (clCheckParam('-i')) then
+  xArray = TStringArraySplitX(clGetParamValue('-i'), ',')
+  call toIntegerArray(xArray, 10, int_columns(:), int_col_num)
+else
+  int_col_num = 0
+endif
+
+sIntegerFormat = clGetParamValue('-int', sIntegerFormat)
+sRealFormat = clGetParamValue('-real', sRealFormat)
+if (clCheckParam('--help')) then
+  print *, 'Usage: join_num [options] file1 file2'
+  print *, 'For each pair of input lines with identical (in numerical sense) join fields, write a line to'
+  print *, 'standard output.  The default join field is the first, delimited'
+  print *, 'by whitespace.  When FILE1 or FILE2 (not both) is -, read standard input.'
+  print *, '  -i LIST           LIST provides comma-separated list of fields, that are assumed to be integer'
+  print *, '  -int FORMAT       FORMAT sets output format for integer values'
+  print *, '  -real FORMAT      FORMAT sets output format for real values'
+  print *, '  -1 FIELD          join on this FIELD of file 1'
+  print *, '  -2 FIELD          join on this FIELD of file 2'
+  print *, '  -j FIELD          equivalent to `-1 FIELD -2 FIELD'
+  print *, '  --help            display this help and exit'
+  STOP
+endif
+
+sFile1 = clGetFreeParam(1)
+sFile2 = clGetFreeParam(2)
 
 call LoadFromFile(sFile1, xData1, iCols1, iRows1)
 call LoadFromFile(sFile2, xData2, iCols2, iRows2)
 
-!write(*,*) iCols1, iRows1, iCols2, iRows2
-
-call quick_sort_index(xData1(:,col1), xData1(:,col1), iIndex1(:))
-call quick_sort_index(xData2(:,col2), xData2(:,col2), iIndex2(:))
+call quick_sort_index(xData1(1:iRows1,col1), xData1(1:iRows1,iCols1+1), iIndex1(1:iRows1))
+call quick_sort_index(xData2(1:iRows2,col2), xData2(1:iRows2,iCols2+1), iIndex2(1:iRows2))
 
 sFormat = '('
-if (bIsInteger(1)) then
-  sFormat = trim(sFormat)//sIntFormat
+if (1.in.int_columns(1:int_col_num)) then
+  sFormat = trim(sFormat)//sIntegerFormat
 else
   sFormat = trim(sFormat)//sRealFormat
 endif
 do i = 2, iCols1+iCols2-1
-  if (bIsInteger(i)) then
-    sFormat = trim(sFormat)//',2X,'//sIntFormat
+  if (i.in.int_columns(1:int_col_num)) then
+    sFormat = trim(sFormat)//',2X,'//sIntegerFormat
   else
     sFormat = trim(sFormat)//',2X,'//sRealFormat
   endif
 enddo
 sFormat = trim(sFormat) // ')'
 
-!write(*,*) sFormat, col1, col2,iCols1, iRows1, iCols2, iRows2
 jj = 1
 do i = 1, iRows1
-!   write(*,*) i, jj, iIndex1(i), iIndex2(jj),xData1(iIndex1(i),col1),xData2(iIndex2(jj),col2)
   do while (xData1(iIndex1(i),col1).gt.xData2(iIndex2(jj),col2))
     jj = jj + 1
     if (jj.gt.iRows2) then
       stop
     endif
   enddo
-!   write(*,*) i, jj, iIndex1(i), iIndex2(jj),xData1(iIndex1(i),col1),xData2(iIndex2(jj),col2)
   if (xData1(iIndex1(i),col1).eq.xData2(iIndex2(jj),col2)) then
     write(*,sFormat) xData1(i,1:col1-1), &
                      xData1(iIndex1(i),col1), &
