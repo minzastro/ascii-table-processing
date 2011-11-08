@@ -29,7 +29,6 @@ list_out = list_in
 DO i = 1, SIZE(list_out)
   order(i) = i
 END DO
-
 CALL quick_sort_1(1, SIZE(list_out))
 
 contains

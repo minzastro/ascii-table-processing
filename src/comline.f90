@@ -11,6 +11,7 @@ integer, parameter :: PAR_LENGTH = 100
 
 character*(PAR_LENGTH), save :: comline_param(COMLINE_MAX)
 integer, save :: comline_count !number of parameters
+integer, save :: iFirstFreeParameter ! index of the first non-prefixed parameter
 
 interface clGetParamValue
   module procedure clGetParamValueC
@@ -27,6 +28,7 @@ contains
 subroutine clReadParams
 integer i
   comline_count = iargc()
+  iFirstFreeParameter = 1
   if (comline_count.gt.COMLINE_MAX) then
      if (DO_DEBUG) then
       write(*,*) 'Too many parameters: ',comline_count, ' keeping only ', COMLINE_MAX
@@ -35,6 +37,9 @@ integer i
   endif
   do i = 1, comline_count
     call GetArg(i, comline_param(i))
+    if (comline_param(i)(1:1).eq.'-') then
+      iFirstFreeParameter = i + 2
+    endif
   enddo
   if (DO_DEBUG) then
     write(*,*) comline_count, 'command-line parameters'
@@ -58,7 +63,14 @@ logical bResult
   clCheckParam = bResult
 end function clCheckParam
 
-function clGetParamValueC(s, sDefault) result(sResult)
+function clGetFreeParam(i) result (sResult) ! Returns i-th free parameter (counts from 1)
+integer, intent(in) :: i
+character*(PAR_LENGTH) sResult
+  sResult = comline_param(iFirstFreeParameter + i - 1)
+end function clGetFreeParam
+
+
+function clGetParamValueC(s, sDefault) result(sResult) ! Returns the value of the parameter with key 's'
 character*(*), intent(in) :: s
 character*(*), intent(in), optional :: sDefault
 character*(PAR_LENGTH) sResult
