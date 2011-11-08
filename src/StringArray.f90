@@ -1,9 +1,8 @@
+module StringArray
 !! Set of strings handling
 !!@author Alexey A. Mints
 !!@version 0.2 (12.10.2009)
-module StringArray
 use operators
-use logs
 
 implicit none
 
@@ -194,11 +193,27 @@ character*(10) sJ
       iA(j) = trim(sa%member(j)%chars)
     else
       call Integer_to_Chars(sJ, j)
-      call WriteToLog('ERROR! Wrong integer in the array: '//trim(sa%member(j)%chars)//' at position '//trim(sJ))
-      close(iLogFile)
+      write(*,*) 'ERROR! Wrong integer in the array: '//trim(sa%member(j)%chars)//' at position '//trim(sJ)
       stop
     end if
   enddo
 end subroutine toIntegerArray
+
+subroutine toRealArray(sa, iL, iA, iAsize)
+type(TStringArray), intent(in) :: sa  !input array
+integer, intent(in) :: iL
+real*8, intent(out) :: iA(iL)
+integer, intent(out) :: iAsize
+character*(20) sJ
+integer j
+  iAsize = min(iL,sa%length)
+  do j=1,iAsize
+    if (isReal(trim(sa%member(j)%chars))) then
+      iA(j) = trim(sa%member(j)%chars)
+    else
+      iA(j) = REAL_NAN
+    end if
+  enddo
+end subroutine toRealArray
 
 end module
