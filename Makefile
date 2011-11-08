@@ -3,6 +3,9 @@ F90=gfortran -Jlib -Ilib -L/home/Tux/minz/lib -I/home/Tux/minz/lib  -L. -fno-ran
 gnuout: src/gnuout.F90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/stringUtils.o
 	$(F90) -lgnuplotfortran -lfortranposix -o gnuout src/gnuout.F90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/stringUtils.o
 	
+average_files: src/average_files.f90 lib/operators.o lib/StringArray.o
+	$(F90) -o average_files src/average_files.f90 lib/operators.o lib/StringArray.o
+	
 lib/comline.o: src/comline.f90 lib/logs.o lib/operators.o
 	$(F90) -c -o lib/comline.o src/comline.f90
 	
