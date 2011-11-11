@@ -1,4 +1,6 @@
 program GnuOut
+! Program to perform quick plots with GNUPLOT.
+! Author: Alexey Mints (minzastro at gmail.com)
 use datatypes
 use gnuplot_module
 use gnuplot_module_data
@@ -107,8 +109,5 @@ type(TStringArray) xArray
   else
     i = gnuplot_plot2d(gctrl, iSize, xData(1:iSize,xcol_add(1)), xData(1:iSize,xcol_add(2)),'')
   end if
-!   if ((trim(sOutType).eq.'').and.(bPause)) then
-!     i = gnuplot_pause(gctrl, '5', '"Hit ENTER to continue"')
-!   endif
   i = gnuplot_close(gctrl)
 end program GnuOut
