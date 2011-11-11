@@ -1,5 +1,7 @@
 F90=gfortran -Jlib -Ilib -L/home/Tux/minz/lib -I/home/Tux/minz/lib  -L. -fno-range-check
 
+all: gnuout average_files join_num
+
 gnuout: src/gnuout.F90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/stringUtils.o
 	$(F90) -lgnuplotfortran -lfortranposix -o gnuout src/gnuout.F90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/stringUtils.o
 	

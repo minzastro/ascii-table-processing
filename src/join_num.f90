@@ -1,4 +1,7 @@
 program join_num
+! Tool to join two ASCII tables by a number key.
+! Comparable with the classical linux 'join' command, 
+! but operates on float key values.
 use array_works
 use quickSort
 use StringArray
@@ -8,9 +11,7 @@ use comline
 implicit none
 
 real*8 xData1(MAX_ROW,0:MAX_COLUMN), xData2(MAX_ROW,0:MAX_COLUMN)
-logical bIsInteger(MAX_COLUMN) !Determines wether the column is integer instead of real
 character*(250) sFile1, sFile2  !Filenames
-character*(250) sKey, sKeyValue           !! input key & it's value
 integer iArgs, i, col1, col2, ii,jj
 integer iCols1, iCols2, iRows1, iRows2     !data measures
 integer iIndex1(MAX_ROW), iIndex2(MAX_ROW) !indexes for the data
@@ -18,7 +19,6 @@ type (TStringArray) xArray !! For parsing comma-separated arguments
 
 iArgs = iargc()
 
-bIsInteger(:) = .false.
 
 i = 1
 col1 = 1
@@ -89,18 +89,18 @@ sFormat = trim(sFormat) // ')'
 
 jj = 1
 do i = 1, iRows1
-  do while (xData1(iIndex1(i),col1).gt.xData2(iIndex2(jj),col2))
+  do while (xData1(iIndex1(i), col1).gt.xData2(iIndex2(jj), col2))
     jj = jj + 1
     if (jj.gt.iRows2) then
       stop
     endif
   enddo
-  if (xData1(iIndex1(i),col1).eq.xData2(iIndex2(jj),col2)) then
-    write(*,sFormat) xData1(i,1:col1-1), &
-                     xData1(iIndex1(i),col1), &
-                     xData1(i,col1+1:iCols1), &
-		     xData2(jj,1:col2-1), &
-		     xData2(jj,col2+1:iCols2)
+  if (xData1(iIndex1(i), col1).eq.xData2(iIndex2(jj), col2)) then
+    write(*,sFormat) xData1(i, 1:col1-1), &
+                     xData1(iIndex1(i), col1), &
+                     xData1(i, col1+1:iCols1), &
+		     xData2(jj, 1:col2-1), &
+		     xData2(jj, col2+1:iCols2)
   endif
 enddo
 
