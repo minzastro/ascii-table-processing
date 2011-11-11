@@ -94,6 +94,10 @@ character*(*), intent(in) :: c
 character*(1), intent(in) :: delimiter
 type(TStringArray), intent(out) :: sa1
 integer pos1, pos2, i
+  sa1%length = 0
+  if (trim(c).eq.'') then
+    return
+  endif
   i=1
   pos1=0 !index(c, delimiter)
   pos2 = index(c(pos1+1:), delimiter)
@@ -115,6 +119,10 @@ character*(1), intent(in) :: delimiter
 logical, intent(in) :: bRemoveDelimiter
 type(TStringArray), intent(out) :: sa1
 integer pos1, pos2, i
+  sa1%length = 0
+  if (trim(c).eq.'') then
+    return
+  endif
   i=1
   pos1 = 0 !index(c, delimiter)
   pos2 = index(c(pos1+1:), delimiter)
