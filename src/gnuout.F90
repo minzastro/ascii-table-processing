@@ -107,7 +107,9 @@ type(TStringArray) xArray
   else if (xcol_num.eq.1) then
     i = gnuplot_plot2d(gctrl, iSize, xData(1:iSize,1), xData(1:iSize,xcol_add(1)),'')
   else
-    i = gnuplot_plot2d(gctrl, iSize, xData(1:iSize,xcol_add(1)), xData(1:iSize,xcol_add(2)),'')
+    do j = 2, xcol_num
+      i = gnuplot_plot2d(gctrl, iSize, xData(1:iSize,xcol_add(1)), xData(1:iSize,xcol_add(j)),'')
+    enddo
   end if
   i = gnuplot_close(gctrl)
 end program GnuOut
