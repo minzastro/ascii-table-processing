@@ -75,6 +75,14 @@ infinit_loop: do
           endif
         enddo
         aOut(i) = dsqrt(fTmp / count(bMask))
+      case ('diff')
+        aOut(i) = aData(i, 2) - aData(i, 1)
+      case ('diff_avg')
+        if (bMask(1)) then
+          aOut(i) = sum((aData(i, 2:iUnitCount) - aData(i, 1)), mask=bMask) / count(bMask)
+        else
+          aOut(i) = REAL_NAN
+        endif
     end select
   enddo
   write(*,*) aOut(1:iLineLength)
