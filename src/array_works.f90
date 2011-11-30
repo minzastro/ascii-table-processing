@@ -3,7 +3,7 @@
 module array_works
 use tcGlobals
 use file_io ! io-file routines
-use stringUtils
+use StringUtils
 use StringArray
 
 implicit none
