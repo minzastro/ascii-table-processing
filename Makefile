@@ -2,11 +2,11 @@ F90=gfortran -Jlib -Ilib -L/home/Tux/minz/lib -I/home/Tux/minz/lib  -L. -fno-ran
 
 all: gnuout average_files join_num
 
-gnuout: src/gnuout.F90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/stringUtils.o
-	$(F90) -lgnuplotfortran -lfortranposix -o gnuout src/gnuout.F90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/stringUtils.o
+gnuout: src/gnuout.F90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/StringUtils.o
+	$(F90) -lgnuplotfortran -lfortranposix -o gnuout src/gnuout.F90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/StringUtils.o
 	
-average_files: src/average_files.f90 lib/operators.o lib/StringArray.o
-	$(F90) -o average_files src/average_files.f90 lib/operators.o lib/StringArray.o
+average_files: src/average_files.f90 lib/operators.o lib/StringArray.o lib/StringUtils.o
+	$(F90) -o average_files src/average_files.f90 lib/operators.o lib/StringArray.o lib/StringUtils.o
 	
 join_num: src/join_num.f90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/stringUtils.o lib/quickSort.o
 	$(F90) -o join_num src/join_num.f90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/stringUtils.o lib/quickSort.o
@@ -14,7 +14,7 @@ join_num: src/join_num.f90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_wo
 lib/comline.o: src/comline.f90 lib/logs.o lib/operators.o
 	$(F90) -c -o lib/comline.o src/comline.f90
 	
-lib/array_works.o: src/array_works.f90 lib/logs.o lib/tcGlobals.o lib/file_io.o lib/operators.o lib/stringUtils.o lib/StringArray.o
+lib/array_works.o: src/array_works.f90 lib/logs.o lib/tcGlobals.o lib/file_io.o lib/operators.o lib/StringUtils.o lib/StringArray.o
 	$(F90) -c -o lib/array_works.o src/array_works.f90
 	
 lib/StringArray.o: src/StringArray.f90 lib/operators.o
@@ -23,8 +23,8 @@ lib/StringArray.o: src/StringArray.f90 lib/operators.o
 lib/logs.o: src/logs.f90 
 	$(F90) -c -o lib/logs.o src/logs.f90
 	
-lib/stringUtils.o: src/stringUtils.f90 
-	$(F90) -c -o lib/stringUtils.o src/stringUtils.f90
+lib/StringUtils.o: src/StringUtils.f90 
+	$(F90) -c -o lib/StringUtils.o src/StringUtils.f90
 	
 lib/file_io.o: src/file_io.f90 
 	$(F90) -c -o lib/file_io.o src/file_io.f90

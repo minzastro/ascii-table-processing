@@ -11,6 +11,7 @@ program average_files
 ! Author: Alexey Mints (minzastro at gmail.com)
 use StringArray
 use operators
+use StringUtils
 
 integer iUnitCount
 character*(100) sFileName
@@ -52,6 +53,7 @@ infinit_loop: do
     endif
     aData(:, i) = REAL_NAN
     ! Splitting line into values
+    call TrimLeft(sLine, sLine)
     xA = TStringArraySplitX(trim(sLine), ' ', .true.)
     call toRealArray(xA, 30, aData(:, i), iTmp)
     if (iTmp.gt.iLineLength) then
