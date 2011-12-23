@@ -64,6 +64,10 @@ infinit_loop: do
   do i = 1, iLineLength
     bMask(1:iUnitCount) = .not.isnan(aData(i, 1:iUnitCount))
     select case (trim(sCommand))
+      case ('min')
+        aOut(i) = minval(aData(i, 1:iUnitCount), mask=bMask)
+      case ('max')
+        aOut(i) = maxval(aData(i, 1:iUnitCount), mask=bMask)
       case ('avg')
         aOut(i) = sum(aData(i, 1:iUnitCount), mask=bMask) / count(bMask)
       case ('sum')
@@ -85,6 +89,8 @@ infinit_loop: do
         else
           aOut(i) = REAL_NAN
         endif
+      case default
+        write(*,*) 'unknown command: '//trim(sCommand)
     end select
   enddo
   write(*,*) aOut(1:iLineLength)
