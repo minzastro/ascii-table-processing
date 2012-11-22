@@ -95,7 +95,7 @@ do i = 1, iRows1
       stop
     endif
   enddo
-  if (xData1(iIndex1(i), col1).eq.xData2(iIndex2(jj), col2)) then
+  if (dabs(xData1(iIndex1(i), col1) - xData2(iIndex2(jj), col2)).lt.(spacing(xData1(iIndex1(i), col1)))) then
     write(*,sFormat) xData1(i, 1:col1-1), &
                      xData1(iIndex1(i), col1), &
                      xData1(i, col1+1:iCols1), &
