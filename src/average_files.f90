@@ -32,7 +32,7 @@ endif
 
 ! Read filenames and open files
 iUnitCount = 0
-do 
+do
   read(*,*, iostat=istat) sFileName
   if (istat.eq.0) then
     open(unit=50+iUnitCount, file=sFileName, status="OLD")
@@ -54,6 +54,7 @@ infinit_loop: do
     aData(:, i) = REAL_NAN
     ! Splitting line into values
     call TrimLeft(sLine, sLine)
+    call replace_substring(sLine, achar(9), ' ') !replacing TABS with SPACEs
     xA = TStringArraySplitX(trim(sLine), ' ', .true.)
     call toRealArray(xA, 30, aData(:, i), iTmp)
     if (iTmp.gt.iLineLength) then
@@ -69,6 +70,9 @@ infinit_loop: do
       case ('max')
         aOut(i) = maxval(aData(i, 1:iUnitCount), mask=bMask)
       case ('avg')
+        aOut(i) = sum(aData(i, 1:iUnitCount), mask=bMask) / count(bMask)
+      case ('avg_pos') !average positive values only
+        bMask(1:iUnitCount) = bMask(1:iUnitCount).and.(aData(i, 1:iUnitCount).gt.0d0)
         aOut(i) = sum(aData(i, 1:iUnitCount), mask=bMask) / count(bMask)
       case ('sum')
         aOut(i) = sum(aData(i, 1:iUnitCount), mask=bMask)
