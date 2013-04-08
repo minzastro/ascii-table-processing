@@ -1,4 +1,4 @@
-F90=gfortran -Jlib -Ilib -L/home/Tux/minz/lib -I/home/Tux/minz/lib  -L. -fno-range-check
+F90=gfortran -Jlib -Ilib -L/home/minz/lib -I/home/minz/lib  -L. -fno-range-check
 
 all: gnuout average_files join_num
 
