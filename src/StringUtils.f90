@@ -33,7 +33,7 @@ integer iX
   iX = index(str(begin:len(str)), substr)
   if (iX.ne.0) then
     index2 = iX+begin-1
-  else 
+  else
     index2 = 0
   end if
 end function index2
@@ -42,10 +42,7 @@ subroutine TrimLeft(input, output) !! Removes leading spaces from a string
 character*(*), intent(IN)::input
 character*(*), intent(OUT)::output
 integer i
-  i = 1
-  do while (input(i:i).eq.' ')
-    i = i + 1
-  end do
+  i = verify(input, ' ')
   output = input(i:len(input))
 end subroutine TrimLeft
 
@@ -135,7 +132,7 @@ character*(1) LineSeparator
     SubStr = LongString(1:Pos-1)
     LongString = LongString(Pos+1 : Len(LongString))
     write (filenum, 100) trim(SubStr)
-	100 FORMAT(A)
+  100 FORMAT(A)
     Pos = Scan(LongString, LineSeparator)
   end do
 end subroutine WriteLongString
