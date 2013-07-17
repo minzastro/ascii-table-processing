@@ -18,7 +18,7 @@ character*(100) sFileName
 character*(1000) sLine
 integer istat
 type(TStringArray) :: xA
-real*8 aData(30, 40), aOut(30), fTmp
+real*8 aData(30, 70), aOut(30), fTmp
 logical bMask(30)
 integer iLineLength, iTmp
 character*(20) sCommand
@@ -35,7 +35,7 @@ iUnitCount = 0
 do
   read(*,*, iostat=istat) sFileName
   if (istat.eq.0) then
-    open(unit=50+iUnitCount, file=sFileName, status="OLD")
+    open(unit=50+iUnitCount, file=trim(sFileName), status="OLD")
     iUnitCount = iUnitCount + 1
   else
     exit
