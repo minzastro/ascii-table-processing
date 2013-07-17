@@ -3,7 +3,7 @@ program average_files
 ! Files have to have the same number of values in each line.
 ! USAGE:
 ! >average_files [command] < [list_of_filenames]
-! command - can be sum, avg or dis (default: avg)
+! command - can be sum, avg, med or dis (default: avg)
 ! list_of_filenames - file or pipe, containing list of files to be processed.
 ! EXAMPLE:
 ! >ls *.dat | average_files sum
@@ -12,13 +12,14 @@ program average_files
 use StringArray
 use operators
 use StringUtils
+use quickSort
 
 integer iUnitCount
 character*(100) sFileName
 character*(1000) sLine
 integer istat
 type(TStringArray) :: xA
-real*8 aData(30, 70), aOut(30), fTmp
+real*8 aData(30, 70), aOut(30), fTmp, aTmp(70)
 logical bMask(30)
 integer iLineLength, iTmp
 character*(20) sCommand
@@ -92,6 +93,15 @@ infinit_loop: do
           aOut(i) = sum((aData(i, 2:iUnitCount) - aData(i, 1)), mask=bMask) / count(bMask)
         else
           aOut(i) = REAL_NAN
+        endif
+      case ('med', 'median')
+        aTmp(1:count(bMask)) = pack(aData(i, 1:iUnitCount), bMask)
+        call quick_sort(aTmp(1:count(bMask)), aTmp(1:count(bMask)))
+        write(*, *) mod(count(bMask), 2), count(bMask)/2
+        if (mod(count(bMask), 2).eq.1) then
+          aOut(i) = aTmp(count(bMask)/2 + 1)
+        else
+          aOut(i) = 0.5*(aTmp(count(bMask)/2) + aTmp(count(bMask)/2 + 1))
         endif
       case default
         write(*,*) 'unknown command: '//trim(sCommand)
