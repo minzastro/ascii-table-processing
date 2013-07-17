@@ -1,4 +1,4 @@
-F90=gfortran -Jlib -Ilib -L/home/minz/lib -I/home/minz/lib  -L. -fno-range-check
+F90=gfortran -Jlib -Ilib -L/home/mints/lib -I/home/mints/lib  -L. -fno-range-check
 
 all: gnuout average_files join_num
 
@@ -8,8 +8,8 @@ gnuout: src/gnuout.F90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.
 average_files: src/average_files.f90 lib/operators.o lib/StringArray.o lib/StringUtils.o
 	$(F90) -o average_files src/average_files.f90 lib/operators.o lib/StringArray.o lib/StringUtils.o
 	
-join_num: src/join_num.f90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/stringUtils.o lib/quickSort.o
-	$(F90) -o join_num src/join_num.f90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/stringUtils.o lib/quickSort.o
+join_num: src/join_num.f90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/StringUtils.o lib/quickSort.o
+	$(F90) -o join_num src/join_num.f90 lib/comline.o lib/logs.o lib/tcGlobals.o lib/array_works.o lib/file_io.o lib/operators.o lib/StringArray.o lib/StringUtils.o lib/quickSort.o
 	
 lib/comline.o: src/comline.f90 lib/logs.o lib/operators.o
 	$(F90) -c -o lib/comline.o src/comline.f90
