@@ -97,7 +97,6 @@ infinit_loop: do
       case ('med', 'median')
         aTmp(1:count(bMask)) = pack(aData(i, 1:iUnitCount), bMask)
         call quick_sort(aTmp(1:count(bMask)), aTmp(1:count(bMask)))
-        write(*, *) mod(count(bMask), 2), count(bMask)/2
         if (mod(count(bMask), 2).eq.1) then
           aOut(i) = aTmp(count(bMask)/2 + 1)
         else
