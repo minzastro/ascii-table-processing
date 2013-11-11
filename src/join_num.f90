@@ -1,6 +1,6 @@
 program join_num
 ! Tool to join two ASCII tables by a number key.
-! Comparable with the classical linux 'join' command, 
+! Comparable with the classical linux 'join' command,
 ! but operates on float key values.
 use array_works
 use quickSort
@@ -16,7 +16,8 @@ integer iArgs, i, col1, col2, ii,jj
 integer iCols1, iCols2, iRows1, iRows2     !data measures
 integer iIndex1(MAX_ROW), iIndex2(MAX_ROW) !indexes for the data
 type (TStringArray) xArray !! For parsing comma-separated arguments
-
+real*8 difference
+logical exact
 iArgs = iargc()
 
 
@@ -44,6 +45,13 @@ if (clCheckParam('-i')) then
   call toIntegerArray(xArray, 10, int_columns(:), int_col_num)
 else
   int_col_num = 0
+endif
+
+if (clCheckParam('-d')) then
+  difference = clGetParamValue('-d', tiny(1.0d0))
+  exact = .False.
+else
+  exact = .True.
 endif
 
 sIntegerFormat = clGetParamValue('-int', sIntegerFormat)
@@ -95,12 +103,17 @@ do i = 1, iRows1
       stop
     endif
   enddo
-  if (xData1(iIndex1(i), col1).eq.xData2(iIndex2(jj), col2)) then
-    write(*,sFormat) xData1(i, 1:col1-1), &
-                     xData1(iIndex1(i), col1), &
-                     xData1(i, col1+1:iCols1), &
-		     xData2(jj, 1:col2-1), &
-		     xData2(jj, col2+1:iCols2)
+  if ((exact.and.(xData1(iIndex1(i), col1).eq.xData2(iIndex2(jj), col2))).or. &
+     ((.not.exact).and.(abs(xData1(iIndex1(i), col1) - xData2(iIndex2(jj), col2)).le.difference) )) then
+    !   write(77, *) i, jj, iIndex1(i), xData1(iIndex1(i), col1), xData1(i, col1+1)
+    write(*,sFormat) xData1(iIndex1(i), 1:iCols1), &
+                     xData2(iIndex2(jj), 1:col2-1), &
+                     xData2(iIndex2(jj), col2+1:iCols2)
+    !write(*,sFormat) xData1(i, 1:col1-1), &
+    !                 xData1(iIndex1(i), col1), &
+    !                xData1(i, col1+1:iCols1), &
+    !         xData2(jj, 1:col2-1), &
+    !         xData2(jj, col2+1:iCols2)
   endif
 enddo
 
