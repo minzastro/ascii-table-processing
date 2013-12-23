@@ -51,6 +51,7 @@ if (clCheckParam('-d')) then
   difference = clGetParamValue('-d', tiny(1.0d0))
   exact = .False.
 else
+  difference = spacing(1.0d0)
   exact = .True.
 endif
 
@@ -97,15 +98,15 @@ sFormat = trim(sFormat) // ')'
 
 jj = 1
 do i = 1, iRows1
-  do while (xData1(iIndex1(i), col1).gt.xData2(iIndex2(jj), col2))
+  do while (xData1(iIndex1(i), col1).gt.(xData2(iIndex2(jj), col2) + difference))
     jj = jj + 1
     if (jj.gt.iRows2) then
       stop
     endif
   enddo
-  if ((exact.and.(xData1(iIndex1(i), col1).eq.xData2(iIndex2(jj), col2))).or. &
-     ((.not.exact).and.(abs(xData1(iIndex1(i), col1) - xData2(iIndex2(jj), col2)).le.difference) )) then
-    !   write(77, *) i, jj, iIndex1(i), xData1(iIndex1(i), col1), xData1(i, col1+1)
+  write(77, *) i, jj, abs(xData1(iIndex1(i), col1) - xData2(iIndex2(jj), col2)),&
+                xData1(iIndex1(i), col1), xData2(iIndex2(jj), col2)
+  if (abs(xData1(iIndex1(i), col1) - xData2(iIndex2(jj), col2)).le.difference) then
     write(*,sFormat) xData1(iIndex1(i), 1:iCols1), &
                      xData2(iIndex2(jj), 1:col2-1), &
                      xData2(iIndex2(jj), col2+1:iCols2)
