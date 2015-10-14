@@ -1,0 +1,44 @@
+    This file is a part of the gnuplotfortran library. This provides an interface between Fortran 90/95 and GNUPlot
+    Copyright (C) 2004  Madhusudan Singh
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+    I would strongly welcome bug reports, feature enhancement requests, compliments, donations and job offers :) My email address : msc@ieee.org
+
+The following procedure assumes that you have downloaded my fortranposix library and installed it appropriately (http://sourceforge.net/projects/fortranposix).
+
+1. Edit the supplied Makefile if necessary.
+
+2. Run make :
+		gmake
+
+3. This will generate a shared library : libgnuplotfortran.so and a few .mod files.
+
+4. Move the shared library to some place within your LD_LIBRARY_PATH. You may want to make it available to everyone, so place it in a system wide path.
+
+5. Move the .mod files to some standard location on your system. You may want to make these available to everyone, so place them in a system wide path.
+
+5. Read the file gnuplot_fortran95_interfaces.f90 to learn about the usage of each function and to obtain the interface.
+
+6. Append the -lgnuplotfortran -lfortranposix options to your linker and three lines to the code where you want to use the library :
+
+	use datatypes
+	use gnuplot_module_data
+	use gnuplot_module
+
+You may also need to specify an addition search path for library files (usually -L), depending upon your fortran compiler.
+
+
+Enjoy !

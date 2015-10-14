@@ -1,0 +1,44 @@
+     This file is a part of the fortranposix library. This makes system calls on Linux and Unix like systems available to Fortran programs.
+     Copyright (C) 2004  Madhusudan Singh 
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+    I would strongly welcome bug reports, feature enhancement requests, compliments, donations and job offers :) My email address : msc@ieee.org
+
+fortranposix overview :
+
+This project started as a part of gnuplotfortran which provides the ability to access GNUPlot directly from Fortran 90/95. I found myself writing so many wrapper routines in C that I decided that a separate library with provides POSIX system calls to FORTRAN programmers was worth it. I know that Intel has its free but non-GPL'ed POSIX library. Sun has its own, and other vendors probably have their Fortran POSIX libraries. This, IMO, leads to many problems :
+
+1. Platform dependent implementation. This creates difficulties in moving Fortran code from compiler to compiler and one Unix variant to another.
+2. Since it is not GPL'ed (or LGPL'ed), it limits free use by users.
+
+I believe that this project solves 2 as it uses underlying GNU C library calls, and is LGPL'ed. However, progress on 1 will depend upon how well supported is Fortran 90/95 - C inter-op. Currently, this project provides the library - libfortranposix.so which contains calls to C routines written with underscores. However, some compilers might have issues in attaching underscores (or attaching two of them). This is where you come in - please help me test this with different compilers and on different OS's. The more bug reports and feature requests that you send, the better this library will become.
+
+The first, alpha release of this library depends explicitly upon a Linux OS (see the file posixwrapper.c to understand why).
+
+(Update - version 0.1 has been tested on Sun with Sun f95 and gcc)
+
+Files supplied in this package :
+
+1. This file, README.
+2. LICENSE, which contains the exact terms of the LGPL license, obtainable from http://www.fsf.org
+3. INSTALL : instructions for compiling, and installing this library
+4. Makefile
+5. fortranposix.f90
+6. posixwrapper.c
+7. fortranposix_interfaces.f90
+8. CREDITS
+9. TODO
+10. CHANGES
