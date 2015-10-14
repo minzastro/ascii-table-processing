@@ -1,0 +1,109 @@
+    This file is a part of the gnuplotfortran library. This provides an interface between Fortran 90/95 and GNUPlot
+    Copyright (C) 2004  Madhusudan Singh
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+    I would strongly welcome bug reports, feature enhancement requests, compliments, donations and job offers :) My email address : msc@ieee.org
+
+
+gnuplotfortran overview :
+
+
+This library is released under LGPL. The full text of LGPL may be found at http://www.fsf.org/licenses/lgpl.txt
+
+In particular, the terms of the GNU LGPL imply that you CAN use this library with proprietary code under some conditions. Please consult the above URL for exact details.
+
+REQUIREMENTS :
+
+This will work for any system that :
+
+1. Provides popen, pclose, and other such functions. For instance, if you have the GNU C library installed it will do that.
+2. C object files append an underscore to the end of C library functions.
+3. You will need a copy of the LGPL'ed fortranposix library (Copyright (C) 2004 Madhusudan Singh).
+4. GNUPlot. This library has been tested with GNUPlot 3.7.3 and version 4.0. It may not support all features of version 4.0.
+
+This project requires the fortranposix library (http://sourceforge.net/projects/fortranposix).
+
+CONTENTS :
+
+1. This file, README.
+2. LICENSE, which contains the exact terms of the LGPL license, obtainable from http://www.fsf.org
+3. INSTALL : instructions for compiling, and installing this library
+4. Makefile
+5. gnuplot_fortran95.f90
+6. gnuplot_fortran95_testbench.f90
+7. gnuplot_fortran95_interfaces.f90
+8. CREDITS
+9. TODO
+10. CHANGES
+
+Please do NOT request a Microsoft Windows targeted implementation as I do not use M$ Windoze or any of its variants. And probably never will. If anyone of you is interested in developing a port for Windows and other OS'es, please contact me.
+
+TESTBENCH :
+
+Please consult INSTALL to install the library. Then compile gnuplot_fortran95_testbench.f90 to obtain a test program (you may have to consult your compiler's documentation to find out how to include search paths for libraries and modules (extraoptions) ).
+
+f95 (extraoptions) -o gnuplot_fortran95_testbench gnuplot_fortran95_testbench.f90 -lfortranposix -lgnuplotfortran
+
+Run the resulting program ./gnuplot_fortran95_testbench
+
+Enjoy.
+
+RATIONALE :
+
+I have seen people who prefer a simple plotting system capable of enormous sophistication use gnuplot. I have seen people using fortran 90/95 for serious number crunching. What I found missing to my surprise, was something that linked the two. Granted that other libraries like pgplot, psplot, dislin, etc exist, but there is something nice about the simplicity of gnuplot which attracts so many users.
+
+Gnuplot is a freely available, command-driven graphical display tool for Unix. It compiles and works quite well on a number of Unix flavours as well as other operating systems. The following module enables sending display, etc. requests to gnuplot through simple f90/95 calls.
+
+
+GENERAL DIAGNOSTICS :
+
+status = 0 <-----> SUCCESS
+status <0 or NULL <-----> ERROR
+status > 0 <-----> WARNING
+
+SOME USAGE INFORMATION ABOUT DATATYPES :
+
+The module datatypes declares the following datatypes :
+
+        integer, parameter :: i4b = SELECTED_INT_KIND(9)
+        integer, parameter :: dp =  KIND(1.0d0)
+        integer, parameter :: lgc = KIND(.true.)
+        integer, parameter :: dpc = KIND((1.0d0,1.0d0))
+
+These are used in the library.
+
+SOME BORING HISTORY :
+
+I have been a user of FORTRAN for a long time. And have also used GNUPlot extensively, and regard it as my primary plotting program. However, what always rankled me was the absence of a good way to make these two work together. About 6 years ago, I worked on analyzing pulsar polarization data as a summer intern at GMRT, NCRA, India. I wrote a lot of code which generated gnuplot scripts and then ran them. This was messy and cumbersome, but as I did not know much about how the Linux kernel works, I could not do anything about it. In January this year, I learnt about the existence of C, C++ and Python interfaces for GNUPlot, but could not find any for F90/95 which is my sole programming language of work. This was intolerable. I taught myself the basics of kernel IPC, and then sat down to write this code. This code has been written intermittently over the past 3 months (started 1/27, first version out 4/26). I first dallied with the Intel POSIX library that ships with IFC. I found the documentation a little spotty, and also realized two big problems : licenses and usability. If I had written this interface using that library, the non-GPL'ed licenses would have possibly caused some problems later, plus people using other compilers would not have been able to make use of it. So, about 2 weeks ago, I deleted the old code and started writing wrappers to the GNU C library routines and using them in the code. Then I realized that the set of wrappers could themselves solve another long standing problem in Fortran - lack of availability of many system POSIX calls ! So, that part of the code was spun off into another project - fortranposix (fortranposix.sourceforge.net).
+
+Other interfaces to GNUPlot can be found at http://ndevilla.free.fr/gnuplot/ . I would like to think that the Fortan implementation provided here is far more feature rich than those :)
+
+ DISCLAIMER :
+
+ Though it has been stated explicitly in the terms of the License, the author disclaims ALL responsibility, express or implied, in using the library, whether any damages, losses, etc. are deemed to be directly caused or indirectly contributed in any fashion. Please understand that you use this library COMPLETELY at your OWN risk.
+
+ DOCUMENTATION :
+
+ The associated library (gnuplot_fortran95.f90) is documented in gnuplot_fortran95_interfaces.f90
+ Please consult it before using the subroutines and functions.
+
+ CONTACT INFORMATION :
+
+ I would appreciate receiving some feedback upon your use of this code in your programs and would request that appropriate acknowledgment in publications or software be made whenever you use this code with your programs.
+
+ If you feel that you found this library to be useful / have found a bug / want to discuss a feature enhancement, drop me a line at msc@ieee.org.
+
+ Madhusudan Singh, Ann Arbor, early spring, 2004
