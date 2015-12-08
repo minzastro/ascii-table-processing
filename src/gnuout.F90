@@ -12,7 +12,7 @@ use comline
 implicit none
 
 !integer, parameter :: DATA_SIZE = 1000
- 
+
 type(gnuplot_ctrl), pointer :: gctrl
 character(len=GP_CMD_SIZE) sInit
 character(len=GP_CMD_SIZE) sCommand
@@ -29,7 +29,7 @@ character*(100) sKeyValue
 character*(8) sOutType !type of output file
 character*(12) sStyle
 
-logical bLogX, bLogY
+logical bLogX, bLogY, bOneToOne
 
 type(TStringArray) xArray
 
@@ -44,9 +44,9 @@ type(TStringArray) xArray
   do i = 1,10
     xcol_add(i)=i
   enddo
-  
+
   call clReadParams()
-  
+
   sTitle = clGetParamValue('-t', '--title', sTitle)
   sOutFileName = clGetParamValue('-o', '--output', sOutFileName)
   sStyle = clGetParamValue('-s', '--style', sStyle)
@@ -60,28 +60,30 @@ type(TStringArray) xArray
   if (index(sKeyValue, 'y').gt.0) then
     bLogY = .true.
   endif
-  
+
   xArray = TStringArraySplitX(clGetParamValue('-x'), ',')
   call toIntegerArray(xArray, 10, xcol_add(:), xcol_num)
-  
+
   if (clCheckParam('--help')) then
 #include "USAGE.f90"
     stop
   endif
-  
+
   call LoadFromFile(sInFileName, xData, colnum, iSize)
+
+  bOneToOne = clCheckParam('--onetoone')
 
   if (clCheckParam('-a').or.clCheckParam('--auto')) then
     xcol_add(2) = xcol_add(1)
     xcol_add(1) = 0
   endif
-  
+
   if (trim(sOutType).eq.'') then
     sInit = '-persist '//trim(sInit)
   endif
 
   gctrl=>gnuplot_init(sInit)
-  
+
   if (trim(sOutType).ne.'') then
     if (trim(sOutFileName).ne.'') then
       i = gnuplot_hardcopy(gctrl, trim(sOutType), trim(sOutFileName))
@@ -111,5 +113,9 @@ type(TStringArray) xArray
       i = gnuplot_plot2d(gctrl, iSize, xData(1:iSize,xcol_add(1)), xData(1:iSize,xcol_add(j)),'')
     enddo
   end if
+  if (bOneToOne) then
+    gctrl%plotstyle='l'
+    i = gnuplot_plot2d(gctrl, iSize, xData(1:iSize,xcol_add(1)), xData(1:iSize,xcol_add(1)),'')
+  endif
   i = gnuplot_close(gctrl)
 end program GnuOut
