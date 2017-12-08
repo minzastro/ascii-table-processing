@@ -113,4 +113,5 @@ for j, column in enumerate(columns[1:]):
 if args.save is None:
     plt.show()
 else:
+    plt.tight_layout()
     plt.savefig(args.save, format='png')

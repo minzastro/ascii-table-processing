@@ -13,6 +13,8 @@ use StringArray
 use operators
 use StringUtils
 use quickSort
+use comline
+
 
 integer iUnitCount
 character*(100) sFileName
@@ -23,18 +25,36 @@ real*8 aData(30, 70), aOut(30), fTmp, aTmp(70)
 logical bMask(30)
 integer iLineLength, iTmp
 character*(20) sCommand
+character*(1000) sFileMask
+!if (iargc().gt.0) then
+!  call GetArg(1, sCommand)
+!else
+!  sCommand = 'avg'
+!endif
 
-if (iargc().gt.0) then
-  call GetArg(1, sCommand)
+call clReadParams()
+sCommand = clGetParamValue('-c', '--command', 'avg')
+sFileMask = clGetParamValue('-f', '--files', '')
+
+if (len(trim(sFileMask)).gt.0) then
+    call EXECUTE_COMMAND_LINE('ls '//trim(sFileMask)//' > '//trim(get_filename()))
 else
-  sCommand = 'avg'
+  if (iargc().gt.0) then
+    open(40, file=trim(get_filename()), status='NEW')
+    do i = 1, iargc() - iFirstFreeParameter + 1
+        write(40, *) clGetFreeParam(i)
+    enddo
+    close(40)
+  else
+    write(*, *) 'Error, no file specified'
+    stop
+  endif
 endif
-
-
+open(40, file=trim(get_filename()), status='OLD')
 ! Read filenames and open files
 iUnitCount = 0
 do
-  read(*,*, iostat=istat) sFileName
+  read(40, *, iostat=istat) sFileName
   if (istat.eq.0) then
     open(unit=50+iUnitCount, file=trim(sFileName), status="OLD")
     iUnitCount = iUnitCount + 1
@@ -42,6 +62,7 @@ do
     exit
   endif
 enddo
+close(40, status='delete')
 
 ! Cycle through files
 infinit_loop: do
@@ -113,4 +134,12 @@ enddo infinit_loop
 do i=1, iUnitCount
   close(i-1)
 enddo
+
+contains
+
+function get_filename() result(sResult) ! Returns the value of the parameter with key 's'
+character*(100) sResult
+  sResult = '___average_files___'//trim(getCharsFromInt(GETPID()))//'.files'  
+end function get_filename
+
 end program average_files
