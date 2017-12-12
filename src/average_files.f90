@@ -25,7 +25,7 @@ real*8 aData(30, 70), aOut(30), fTmp, aTmp(70)
 logical bMask(30)
 integer iLineLength, iTmp
 character*(20) sCommand
-character*(1000) sFileMask
+character*(1000) sFileMask, sFormat
 !if (iargc().gt.0) then
 !  call GetArg(1, sCommand)
 !else
@@ -54,7 +54,7 @@ open(40, file=trim(get_filename()), status='OLD')
 ! Read filenames and open files
 iUnitCount = 0
 do
-  read(40, *, iostat=istat) sFileName
+  read(40, '(a)', iostat=istat) sFileName
   if (istat.eq.0) then
     open(unit=50+iUnitCount, file=trim(sFileName), status="OLD")
     iUnitCount = iUnitCount + 1
@@ -127,7 +127,9 @@ infinit_loop: do
         write(*,*) 'unknown command: '//trim(sCommand)
     end select
   enddo
-  write(*,*) aOut(1:iLineLength)
+  write(sLine, *) aOut(1:iLineLength)
+  call TrimLeft(sLine, sLine)
+  write(*, '(a)') trim(sLine)
 enddo infinit_loop
 
 ! Closing files
